@@ -1556,6 +1556,7 @@ T['CheckResultMemo'] = 'char[1025]' #核对结果说明
 T['FunctionUrl'] = 'char[1025]' #功能链接
 T['AuthInfo'] = 'char[129]' #客户端认证信息
 T['AuthCode'] = 'char[17]' #客户端认证码
+T['AppID'] = 'char[33]' #客户端认证码
 T['LimitUseType'] = 'char' #保值额度使用类型
 LUT_Repeatable = '1' #可重复使用
 LUT_Unrepeatable = '2' #不可重复使用
@@ -1939,11 +1940,12 @@ class ForceUserLogout(BaseStruct): #强制交易员退出
         self.UserID = '' #用户代码, char[16]
 
 class ReqAuthenticate(BaseStruct): #客户端认证请求
-    def __init__(self, BrokerID='', UserID='', UserProductInfo='', AuthCode=''):
+    def __init__(self, BrokerID='', UserID='', UserProductInfo='', AuthCode='', AppID=''):
         self.BrokerID = '' #经纪公司代码, char[11]
         self.UserID = '' #用户代码, char[16]
         self.UserProductInfo = 'ProductInfo' #用户端产品信息, char[11]
         self.AuthCode = '' #认证码, char[17]
+        self.AppID = '' #认证码, char[33]
 
 class RspAuthenticate(BaseStruct): #客户端认证响应
     def __init__(self, BrokerID='', UserID='', UserProductInfo=''):
