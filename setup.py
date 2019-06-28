@@ -6,7 +6,7 @@ try:
 except ImportError:
     ext = 'cpp'; cmdclass = {}
 import re, sys, os, struct, shutil
-fp = open('ctp/__init__.py', 'rb'); data = fp.read(); fp.close()
+fp = open('pyctp/__init__.py', 'rb'); data = fp.read(); fp.close()
 if sys.version_info[0] >= 3: data = data.decode('utf-8')
 __version__ = re.search(r"__version__ = '(.+?)'", data).group(1)
 __author__ = re.search(r"__author__ = '(.+?)'", data).group(1)
@@ -31,9 +31,9 @@ include_dirs = [PREFIX+'ctp', api_dir]
 library_dirs = [api_dir]
 ext_modules = []; package_data = []
 for k,v in BUILD:
-    extm = Extension(name='ctp15._'+k, language='c++',
+    extm = Extension(name='pyctp._'+k, language='c++',
         include_dirs=include_dirs, library_dirs=library_dirs,
-        libraries=[v], sources=['ctp15/%s.%s'%(k,ext)],
+        libraries=[v], sources=['pyctp/%s.%s'%(k,ext)],
     )
     ext_modules.append(extm)
     if platform.startswith('win'):
@@ -42,11 +42,11 @@ for k,v in BUILD:
         extm.extra_link_args = ['-Wl,-rpath,$ORIGIN']
         k = 'lib%s.so'%v
     package_data.append(k)
-    v = 'ctp15/' + k
+    v = 'pyctp/' + k
     shutil.copy2('%s/%s'%(api_dir,k), v)
 
 setup(
-    name='ctp15', version=__version__, author=__author__,
+    name='pyctp', version=__version__, author=__author__,
     cmdclass=cmdclass, ext_modules=ext_modules,
-    packages=['ctp15'], package_dir={'ctp15':'ctp15'}, package_data={'ctp15':package_data},
+    packages=['pyctp'], package_dir={'pyctp':'pyctp'}, package_data={'pyctp':package_data},
 )
