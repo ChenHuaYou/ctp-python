@@ -11,10 +11,14 @@ if sys.version_info[0] >= 3: data = data.decode('utf-8')
 __version__ = re.search(r"__version__ = '(.+?)'", data).group(1)
 __author__ = re.search(r"__author__ = '(.+?)'", data).group(1)
 
-PREFIX = ''
+
+api_name = 'ctpapi-se'
+api_version = 'v6.3.15_20190220'
+lib_quote, lib_trade = 'thostmduserapi_se', 'thosttraderapi_se'
+
 BUILD = (
-    ('MdApi', 'thostmduserapi_se'),
-    ('TraderApi', 'thosttraderapi_se'),
+    ('MdApi', lib_quote),
+    ('TraderApi', lib_trade),
 )
 
 def platform():
@@ -26,8 +30,8 @@ def platform():
     return map2.get(os, os)
 platform = platform()
 
-api_dir = PREFIX+'api/%s'%platform
-include_dirs = [PREFIX+'ctp', api_dir]
+api_dir = 'api/{name}_{version}_{platform}/lib'.format(name=api_name, version=api_version, platform=platform)
+include_dirs = ['api/{name}_{version}_{platform}/include/{name}'.format(name=api_name, version=api_version, platform=platform)]
 library_dirs = [api_dir]
 ext_modules = []; package_data = []
 for k,v in BUILD:
