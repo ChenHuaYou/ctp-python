@@ -1,56 +1,67 @@
+import re
+import sys
+import struct
+import shutil
 from distutils.core import setup
 from distutils.extension import Extension
-try:
-    from Cython.Distutils import build_ext
-    ext = 'pyx'; cmdclass = {'build_ext': build_ext}
-except ImportError:
-    ext = 'cpp'; cmdclass = {}
-import re, sys, os, struct, shutil
-fp = open('pyctp/__init__.py', 'rb'); data = fp.read(); fp.close()
-if sys.version_info[0] >= 3: data = data.decode('utf-8')
-__version__ = re.search(r"__version__ = '(.+?)'", data).group(1)
-__author__ = re.search(r"__author__ = '(.+?)'", data).group(1)
+from Cython.Distutils import build_ext
 
 
 api_name = 'ctpapi-se'
 api_version = 'v6.3.15_20190220'
 lib_quote, lib_trade = 'thostmduserapi_se', 'thosttraderapi_se'
 
-BUILD = (
+libs = (
     ('MdApi', lib_quote),
     ('TraderApi', lib_trade),
 )
 
-def platform():
-    map1 = {'win32':'win', 'linux2':'linux', 'linux':'linux'}
-    map2 = {'darwin':'ios'}
+with open('pyctp/__init__.py', 'r') as f:
+    data = f.read()
+__version__ = re.search(r"__version__ = '(.+?)'", data).group(1)
+__author__ = re.search(r"__author__ = '(.+?)'", data).group(1)
+
+
+def get_platform():
+    map1 = {'win32': 'win', 'linux2': 'linux', 'linux': 'linux'}
+    map2 = {'darwin': 'ios'}
     os = sys.platform
     if os in map1:
-        return '%s%d' % (map1[os], struct.calcsize('P')*8)
+        return '{}{}'.format(map1[os], struct.calcsize('P')*8)
     return map2.get(os, os)
-platform = platform()
 
+
+platform = get_platform()
 api_dir = 'api/{name}_{version}_{platform}/lib'.format(name=api_name, version=api_version, platform=platform)
 include_dirs = ['api/{name}_{version}_{platform}/include/{name}'.format(name=api_name, version=api_version, platform=platform)]
 library_dirs = [api_dir]
-ext_modules = []; package_data = []
-for k,v in BUILD:
-    extm = Extension(name='pyctp._'+k, language='c++',
-        include_dirs=include_dirs, library_dirs=library_dirs,
-        libraries=[v], sources=['pyctp/%s.%s'%(k,ext)],
+ext_modules, package_data = [], []
+for k, v in libs:
+    extm = Extension(
+        name='pyctp._{}'.format(k),
+        language='c++',
+        include_dirs=include_dirs,
+        library_dirs=library_dirs,
+        libraries=[v],
+        sources=['pyctp/{}.{}'.format(k, 'pyx')],
     )
     ext_modules.append(extm)
     if platform.startswith('win'):
-        k = '%s.dll'%v
+        k = '{}.dll'.format(v)
     else:
         extm.extra_link_args = ['-Wl,-rpath,$ORIGIN']
-        k = 'lib%s.so'%v
+        k = 'lib{}.so'.format(v)
     package_data.append(k)
-    v = 'pyctp/' + k
-    shutil.copy2('%s/%s'%(api_dir,k), v)
+    v = 'pyctp/{}'.format(k)
+    shutil.copy2('{}/{}'.format(api_dir, k), v)
 
 setup(
-    name='pyctp', version=__version__, author=__author__,
-    cmdclass=cmdclass, ext_modules=ext_modules,
-    packages=['pyctp'], package_dir={'pyctp':'pyctp'}, package_data={'pyctp':package_data},
+    name='pyctp',
+    version=__version__,
+    author=__author__,
+    cmdclass={'build_ext': build_ext},
+    ext_modules=ext_modules,
+    packages=['pyctp'],
+    package_dir={'pyctp': 'pyctp'},
+    package_data={'pyctp': package_data},
 )
