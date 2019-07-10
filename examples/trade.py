@@ -1,7 +1,7 @@
 import time
+import argparse
 import os.path as op
 from pyctp import ApiStruct, TraderApi
-from cli import parse_cli
 
 
 class TradeClient(TraderApi):
@@ -132,6 +132,17 @@ class TradeClient(TraderApi):
     def OnRspQryTradingAccount(self, pTradingAccount, pRspInfo, nRequestID, bIsLast):
         if pRspInfo and pRspInfo.ErrorID > 0:
             print('*************** OnRspQryTradingAccount ERROR: {}'.format(pRspInfo.ErrorMsg.decode(encoding='gb2312')))
+
+
+def parse_cli():
+    parser = argparse.ArgumentParser(description='Account Monitor')
+    parser.add_argument('--broker', type=str, required=True, help='BrokerID')
+    parser.add_argument('--investor', type=str, required=True, help='InvestorID')
+    parser.add_argument('--password', type=str, required=True, help='Password')
+    parser.add_argument('--app_id', type=str, required=True, help='APP ID')
+    parser.add_argument('--auth_code', type=str, required=True, help='Authentication Code')
+    parser.add_argument('--front_addr', type=str, required=True, help='Front Address')
+    return parser.parse_args()
 
 
 def main():
