@@ -8,16 +8,6 @@
 static inline int TraderSpi_OnFrontConnected(PyObject *);
 static inline int TraderSpi_OnFrontDisconnected(PyObject *, int);
 static inline int TraderSpi_OnHeartBeatWarning(PyObject *, int);
-
-// static inline int TraderSpi_OnRspAuthenticate(PyObject *, CThostFtdcRspAuthenticateField *pRspAuthenticateField, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-// static inline int TraderSpi_OnRspUserAuthMethod(PyObject *, CThostFtdcRspUserAuthMethodField *pRspUserAuthMethod, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-// static inline int TraderSpi_OnRspGenUserCaptcha(PyObject *, CThostFtdcRspGenUserCaptchaField *pRspGenUserCaptcha, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-// static inline int TraderSpi_OnRspGenUserText(PyObject *, CThostFtdcRspGenUserTextField *pRspGenUserText, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-// static inline int TraderSpi_nRspBatchOrderAction(PyObject *, CThostFtdcInputBatchOrderActionField *pInputBatchOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-// static inline int TraderSpi_OnRspOptionSelfCloseInsert(PyObject *, CThostFtdcInputOptionSelfCloseField *pInputOptionSelfClose, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-// static inline int TraderSpi_OnRspOptionSelfCloseAction(PyObject *, CThostFtdcInputOptionSelfCloseActionField *pInputOptionSelfCloseAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-
-
 static inline int TraderSpi_OnRspAuthenticate(PyObject *, CThostFtdcRspAuthenticateField *, CThostFtdcRspInfoField *, int, bool);
 static inline int TraderSpi_OnRspUserLogin(PyObject *, CThostFtdcRspUserLoginField *, CThostFtdcRspInfoField *, int, bool);
 static inline int TraderSpi_OnRspUserLogout(PyObject *, CThostFtdcUserLogoutField *, CThostFtdcRspInfoField *, int, bool);

@@ -1,10 +1,8 @@
 import re
 import sys
 import struct
-import shutil
-from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
+from distutils.core import setup, Extension
+from Cython.Build import cythonize
 
 
 api_name = 'ctpapi-se'
@@ -38,29 +36,22 @@ library_dirs = [api_dir]
 ext_modules, package_data = [], []
 for k, v in libs:
     extm = Extension(
-        name='pyctp._{}'.format(k),
+        'pyctp._{}'.format(k),
+        ['pyctp/{}.{}'.format(k, 'pyx')],
         language='c++',
         include_dirs=include_dirs,
         library_dirs=library_dirs,
         libraries=[v],
-        sources=['pyctp/{}.{}'.format(k, 'pyx')],
     )
     ext_modules.append(extm)
-    if platform.startswith('win'):
-        k = '{}.dll'.format(v)
-    else:
-        extm.extra_link_args = ['-Wl,-rpath,$ORIGIN']
-        k = 'lib{}.so'.format(v)
-    package_data.append(k)
-    v = 'pyctp/{}'.format(k)
-    shutil.copy2('{}/{}'.format(api_dir, k), v)
+    file_temp = '{}.dll' if platform.startswith('win') else 'lib{}.so'
+    package_data.append(file_temp.format(k))
 
 setup(
     name='pyctp',
     version=__version__,
     author=__author__,
-    cmdclass={'build_ext': build_ext},
-    ext_modules=ext_modules,
+    ext_modules=cythonize(ext_modules, language_level=2),
     packages=['pyctp'],
     package_dir={'pyctp': 'pyctp'},
     package_data={'pyctp': package_data},
